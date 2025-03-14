@@ -7,14 +7,14 @@ pygame.init()
 
 # Constants
 WIDTH, HEIGHT = 600, 400  # Window size
-CELL_SIZE = 20            # Snake cell size
-WHITE, GREEN, RED, BLACK, BLUE, YELLOW, BACKGROUND_COLOR, DETAIL_COLOR = (
-    (255, 255, 255), (0, 255, 0), (255, 0, 0), (0, 0, 0), (0, 0, 255), (255, 255, 0), (50, 168, 82), (45, 155, 75)
+CELL_SIZE = 25            # Snake cell size
+WHITE, GREEN, RED, BLACK, BLUE, YELLOW, BACKGROUND_COLOR,  = (
+    (255, 255, 255), (0, 255, 0), (255, 0, 0), (0, 0, 0), (0, 0, 255), (255, 255, 0), (0, 128, 0)
 )
 FONT = pygame.font.Font(None, 36)
 
 # Create screen
-screen = pygame.display.set_mode((WIDTH, HEIGHT + 30))  # Adjusted to prevent score tab overlap
+screen = pygame.display.set_mode((WIDTH, HEIGHT + 10)) 
 pygame.display.set_caption("Snake Game")
 
 # File to store scores
@@ -50,10 +50,6 @@ def draw_text(text, x, y, color=WHITE):
 # Function to draw detailed background
 def draw_background():
     screen.fill(BACKGROUND_COLOR)
-    for i in range(0, WIDTH, CELL_SIZE * 2):
-        for j in range(30, HEIGHT + 30, CELL_SIZE * 2):
-            pygame.draw.rect(screen, DETAIL_COLOR, (i, j, CELL_SIZE, CELL_SIZE))
-            pygame.draw.rect(screen, DETAIL_COLOR, (i + CELL_SIZE, j + CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
 # Function to get username
 def get_username():
@@ -115,16 +111,16 @@ def game():
 
         # Check if food is eaten
         if new_head == food:
-            score += 10
-            food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(30, HEIGHT + 30, CELL_SIZE))
+            score += 1
+            food = (random.randrange(0, (WIDTH // CELL_SIZE) -1) / CELL_SIZE, random.randrange(HEIGHT / CELL_SIZE)) / WIDTH
+
         else:
             snake.pop()
 
-        # Draw snake and food with better visuals
+        # Draw snake and food
         for segment in snake:
             pygame.draw.rect(screen, BLUE, (*segment, CELL_SIZE, CELL_SIZE))
         pygame.draw.circle(screen, RED, (food[0] + CELL_SIZE // 2, food[1] + CELL_SIZE // 2), CELL_SIZE // 2)
-        pygame.draw.rect(screen, GREEN, (food[0] + CELL_SIZE // 4, food[1], CELL_SIZE // 2, CELL_SIZE // 4))
 
         # Display score in a top bar
         pygame.draw.rect(screen, BLACK, (0, 0, WIDTH, 30))
