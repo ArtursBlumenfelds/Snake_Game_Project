@@ -24,7 +24,7 @@ Lai labot šo preblēmu, jums vajāg pārliecinieties, kā jūms ir uzinstalēts
 
 ## Kas ir izmantots?
 
-![Python](https://i0.wp.com/junilearning.com/wp-content/uploads/2020/06/python-programming-language.webp?fit=200%2C200&ssl=1)
+![Python](https://i0.wp.com/junilearning.com/wp-content/uploads/2020/06/python-programming-language.webp?fit=300%2C300&ssl=1)
 * Python
 
 ![Pygame](https://miro.medium.com/v2/resize:fit:500/0*u3nCXIUG_qECy95g.png)
