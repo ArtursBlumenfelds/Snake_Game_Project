@@ -22,6 +22,15 @@
 Lai labot šo preblēmu, jums vajāg pārliecinieties, kā jūms ir uzinstalēts Python un jebkurā terminalā uzrakstīt:
 ```pip install pygame``` vai ```pip3 install pygame```
 
-## Ka spelēt?
+## Kas ir izmantots?
+
+![Python](https://i0.wp.com/junilearning.com/wp-content/uploads/2020/06/python-programming-language.webp?fit=200%2C200&ssl=1)
+* Python
+
+![Pygame](https://miro.medium.com/v2/resize:fit:500/0*u3nCXIUG_qECy95g.png)
+* Python bibliotēka (Pygame)
+
+![CSV](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlPTscaWLn5d--o_ViMJxVtlr_b94C8FXA2w&s)
+* Csv
 
 
