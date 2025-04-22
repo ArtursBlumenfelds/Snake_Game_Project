@@ -1,32 +1,33 @@
 import pygame
 import random
 import csv
+import subprocess
 
-# Initialize Pygame
 pygame.init()
 
-# Constants
-WIDTH, HEIGHT = 600, 400  # Window size
-CELL_SIZE = 25            # Snake cell size
-WHITE, GREEN, RED, BLACK, BLUE, YELLOW, BACKGROUND_COLOR,  = (
+# constants
+WIDTH, HEIGHT = 400, 400
+CELL_SIZE = 20
+WHITE, GREEN, RED, BLACK, BLUE, YELLOW, BACKGROUND_COLOR = (
     (255, 255, 255), (0, 255, 0), (255, 0, 0), (0, 0, 0), (0, 0, 255), (255, 255, 0), (0, 128, 0)
 )
 FONT = pygame.font.Font(None, 36)
 
-# Create screen
-screen = pygame.display.set_mode((WIDTH, HEIGHT + 10)) 
+# screen
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Snake Game")
 
-# File to store scores
+# file to store scores
 SCORES_FILE = "scores.csv"
 
-# Function to save score with username
+def open_score_manager():
+    subprocess.Popen(["python", "score_manager.py"])
+
 def save_score(username, score):
     with open(SCORES_FILE, "a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow([username, score])
 
-# Function to load scores
 def load_scores():
     try:
         with open(SCORES_FILE, "r") as file:
@@ -42,16 +43,37 @@ def load_scores():
     except FileNotFoundError:
         return []
 
-# Function to display text
 def draw_text(text, x, y, color=WHITE):
     label = FONT.render(text, True, color)
     screen.blit(label, (x, y))
 
-# Function to draw detailed background
 def draw_background():
     screen.fill(BACKGROUND_COLOR)
 
-# Function to get username
+def draw_eyes(head_pos, direction):
+    x, y = head_pos
+    cx, cy = x + CELL_SIZE // 2, y + CELL_SIZE // 2
+    offset = 5
+
+    if direction == (CELL_SIZE, 0):  # right
+        eye1 = (cx + offset, cy - 4)
+        eye2 = (cx + offset, cy + 4)
+    elif direction == (-CELL_SIZE, 0):  # left
+        eye1 = (cx - offset, cy - 4)
+        eye2 = (cx - offset, cy + 4)
+    elif direction == (0, CELL_SIZE):  # down
+        eye1 = (cx - 4, cy + offset)
+        eye2 = (cx + 4, cy + offset)
+    elif direction == (0, -CELL_SIZE):  # up
+        eye1 = (cx - 4, cy - offset)
+        eye2 = (cx + 4, cy - offset)
+    else:
+        return
+
+    pygame.draw.circle(screen, WHITE, eye1, 2)
+    pygame.draw.circle(screen, WHITE, eye2, 2)
+
+
 def get_username():
     username = ""
     active = True
@@ -72,19 +94,17 @@ def get_username():
                     username += event.unicode
     return username
 
-# Main game function
 def game():
     clock = pygame.time.Clock()
     snake = [(100, 100)]
     direction = (CELL_SIZE, 0)
-    food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(30, HEIGHT + 30, CELL_SIZE))
+    food = (random.randrange(0, (WIDTH // CELL_SIZE)-1) * CELL_SIZE, random.randrange(1, (HEIGHT // CELL_SIZE)) * CELL_SIZE)
     score = 0
 
     running = True
     while running:
         draw_background()
 
-        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -98,58 +118,58 @@ def game():
                 elif event.key == pygame.K_RIGHT and direction != (-CELL_SIZE, 0):
                     direction = (CELL_SIZE, 0)
 
-        # Move snake
         new_head = (snake[0][0] + direction[0], snake[0][1] + direction[1])
 
-        # Check for collision with itself or walls
-        if new_head in snake or not (0 <= new_head[0] < WIDTH and 30 <= new_head[1] < HEIGHT + 30):
+        if new_head in snake or not (0 <= new_head[0] < WIDTH and 30 <= new_head[1] < HEIGHT):
             username = get_username()
             save_score(username, score)
             break
 
         snake.insert(0, new_head)
 
-        # Check if food is eaten
         if new_head == food:
             score += 1
-            food = (random.randrange(0, (WIDTH // CELL_SIZE) -1) / CELL_SIZE, random.randrange(HEIGHT / CELL_SIZE)) / WIDTH
-
+            food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(40, HEIGHT, CELL_SIZE))
+            while food in snake:
+                food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(40, HEIGHT, CELL_SIZE))
         else:
             snake.pop()
 
-        # Draw snake and food
-        for segment in snake:
+        for i, segment in enumerate(snake):
             pygame.draw.rect(screen, BLUE, (*segment, CELL_SIZE, CELL_SIZE))
+            if i == 0:  # head
+                draw_eyes(segment, direction)
+
         pygame.draw.circle(screen, RED, (food[0] + CELL_SIZE // 2, food[1] + CELL_SIZE // 2), CELL_SIZE // 2)
 
-        # Display score in a top bar
-        pygame.draw.rect(screen, BLACK, (0, 0, WIDTH, 30))
+        pygame.draw.rect(screen, BLACK, (0, 0, WIDTH, 40))
         draw_text(f"Score: {score}", 10, 5, WHITE)
 
         pygame.display.flip()
         clock.tick(10)
 
-# Function to display scores
 def show_scores():
     screen.fill(BLACK)
     scores = load_scores()
     draw_text("High Scores:", 200, 50, YELLOW)
     for i, (username, score) in enumerate(scores):
         draw_text(f"{i + 1}. {username}: {score} points", 200, 100 + i * 30, WHITE)
-    draw_text("Press SPACE to start", 150, 300, GREEN)
+    draw_text("Press SPACE to start", 120, 300, GREEN)
+    draw_text("Press M to open Score Manager", 60, 340, YELLOW)
     pygame.display.flip()
 
-    # Wait for space key to start game
     waiting = True
     while waiting:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                waiting = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    waiting = False
+                elif event.key == pygame.K_m:
+                    open_score_manager()
 
-# Start game loop
 while True:
     show_scores()
     game()
