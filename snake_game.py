@@ -2,6 +2,7 @@ import pygame
 import random
 import csv
 import subprocess
+from datetime import date  
 
 pygame.init()
 
@@ -24,9 +25,10 @@ def open_score_manager():
     subprocess.Popen(["python", "score_manager.py"])
 
 def save_score(username, score):
+    today = date.today()
     with open(SCORES_FILE, "a", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow([username, score])
+        writer.writerow([username, score, today.strftime("%Y-%m-%d")])
 
 def load_scores():
     try:
@@ -55,16 +57,16 @@ def draw_eyes(head_pos, direction):
     cx, cy = x + CELL_SIZE // 2, y + CELL_SIZE // 2
     offset = 5
 
-    if direction == (CELL_SIZE, 0):  # right
+    if direction == (CELL_SIZE, 0):  #right
         eye1 = (cx + offset, cy - 4)
         eye2 = (cx + offset, cy + 4)
-    elif direction == (-CELL_SIZE, 0):  # left
+    elif direction == (-CELL_SIZE, 0):  #left
         eye1 = (cx - offset, cy - 4)
         eye2 = (cx - offset, cy + 4)
-    elif direction == (0, CELL_SIZE):  # down
+    elif direction == (0, CELL_SIZE):  #down
         eye1 = (cx - 4, cy + offset)
         eye2 = (cx + 4, cy + offset)
-    elif direction == (0, -CELL_SIZE):  # up
+    elif direction == (0, -CELL_SIZE):  #up
         eye1 = (cx - 4, cy - offset)
         eye2 = (cx + 4, cy - offset)
     else:
@@ -151,9 +153,6 @@ def game():
 def show_scores():
     screen.fill(BLACK)
     scores = load_scores()
-    draw_text("High Scores:", 200, 50, YELLOW)
-    for i, (username, score) in enumerate(scores):
-        draw_text(f"{i + 1}. {username}: {score} points", 200, 100 + i * 30, WHITE)
     draw_text("Press SPACE to start", 120, 300, GREEN)
     draw_text("Press M to open Score Manager", 60, 340, YELLOW)
     pygame.display.flip()
