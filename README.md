@@ -30,9 +30,11 @@ Lai labot šo preblēmu, jums vajāg pārliecinieties, kā jūms ir uzinstalēts
 ![Pygame](https://miro.medium.com/v2/resize:fit:500/0*u3nCXIUG_qECy95g.png)
 * Python bibliotēka (Pygame)
 
+![Tkinter](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOOI8KN6PUw_Vn7INUU1PlAOLu858XJMVXwg&s)
+* Python bibliotēka (Tkinter)
+
 ![CSV](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlPTscaWLn5d--o_ViMJxVtlr_b94C8FXA2w&s)
 * Csv
 
-![Tkinter](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOOI8KN6PUw_Vn7INUU1PlAOLu858XJMVXwg&s)
-* Tkinter
+
 
